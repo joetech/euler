@@ -17,25 +17,31 @@ function powers()
 {
     global $powers_of_e, $last;
 
-    for ($i=$last+1; $i < $last + 100; $i++) {
-        // $powers_of_e[] = 11 * $i;
+    for ($i=$last+1; $i < $last + 20; $i++) {
         $powers_of_e[] = pow(11, $i);
     }
 }
 
-function eFree($num)
+function eFree()
 {
-    global $powers_of_e;
+    global $powers_of_e, $num;
 
     if ($num > $powers_of_e[count($powers_of_e)-1]) {
         powers();
     }
-
     foreach ($powers_of_e as $idx => $pow) {
         if ($pow > $num) {
             return true;
         }
         if (strstr((string) $num, (string) $pow)) {
+            // $cnt = strlen($num) - 1;
+            // Skip forward to avoid unneccessary checks
+            // commented out for now as it produces incorrect results with very little speed gain.
+            // if (strstr(substr((string) $num, 0, $cnt), (string) $pow)) {
+            //     $new = (string) $pow + 1;
+            //     $num = str_replace((string) $pow, $new, (string) $num);
+            // }
+
             return false;
         }
     }
@@ -44,12 +50,12 @@ function eFree($num)
 }
 
 function e($pos) {
+    global $num;
+
     $x = 0;
-    $num = 0;
     while ($x < $pos) {
         $num++;
-        // echo "eFree($num) : " . (string) eFree($num) . "\n";
-        if (eFree($num)) {
+        if (eFree()) {
             $x++;
         }
     }
@@ -59,7 +65,11 @@ function e($pos) {
 
 $powers_of_e = array(11);
 $last = 1;
+$num = 0;
 
-var_dump(e(pow(10, 18)));
+// var_dump(e(pow(10, 6))); // 5 =  1.8 sec ... 6 = 23 sec ... 7 = 288 sec
+var_dump(e(500000)); // 10 seconds @ 500,000
+// var_dump(e(pow(10, 18)));
+
 
 result(1, 1);
